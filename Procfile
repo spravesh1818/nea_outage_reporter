@@ -1,0 +1,1 @@
+web: flask db init;flask db migrate;flask db upgrade;flask seed run; gunicorn app:app
