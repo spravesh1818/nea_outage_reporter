@@ -2,7 +2,7 @@ from app import app,db
 from flask import render_template,flash,redirect,url_for,request,jsonify
 from app.forms import LoginForm,RegistrationForm
 from flask_login import current_user,login_user,logout_user,login_required
-from app.models import User
+from app.models import User, Report
 from werkzeug.urls import url_parse
 import json
 from .models import Province,District,LocalBody
@@ -11,16 +11,21 @@ from .schemas import ProvinceSchema,DistrictSchema,LocalBodySchema
 
 
 @app.route('/')
-@app.route('/index')
+@app.route('/index',methods=['GET','POST'])
 def index():
-    return render_template('index.html',title="Home")
+    if request.method=="GET":
+        return render_template('index.html',title="Home")
+    if request.method=="POST":
+        print(request.form)
+        return redirect('/index')
 
 
 @app.route('/reports',methods=['GET','POST'])
 @login_required
 def reports():
     if request.method=="GET":
-        return render_template('reports.html',title="Home")
+        all_reports=Report.query.all()
+        return render_template('reports.html',title="Home",reports=all_reports)
     if request.method=="POST":
         return "Report recorded succcessfully",200
 
@@ -71,7 +76,6 @@ def register():
 def get_province_list():
     if request.method=="GET":
         all_provinces=Province.query.all()
-        print(all_provinces)
         all_provinces_schema=ProvinceSchema(many=True)
         output=all_provinces_schema.dump(all_provinces)
         return jsonify(output)
@@ -93,5 +97,23 @@ def get_localbody_list(district_id):
         output = all_localbody_schema.dump(all_localbody.values('id','name'))
         return jsonify(output)
 
+@app.route('/api/v1/report',methods=['POST'])
+def add_a_report():
+    response = add_report_to_db(request.form.to_dict())
+    return "Report Successfully recorded",200
+
+@app.route('/report',methods=['POST'])
+def add_a_report_html():
+    response=add_report_to_db(request.form.to_dict())
+    flash('Your report has been recorded.If you want to report again,go ahead!')
+    return redirect('/')
 
 
+
+def add_report_to_db(data):
+    province=Province.query.filter_by(id=int(data['province'])).first()
+    district=District.query.filter_by(id=int(data['district'])).first()
+    localbody=LocalBody.query.filter_by(id=int(data['localbody'])).first()
+    report=Report(province=province.name,district=district.name,localbody=localbody.name,customer_id=data['customer_id'],latitude=data['latitude'],longitude=data['longitude'],ward=data['ward_number'],status="Reported")
+    db.session.add(report)
+    db.session.commit()

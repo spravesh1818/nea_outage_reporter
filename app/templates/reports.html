@@ -5,6 +5,7 @@
 <table id="table_id" class="display">
     <thead>
         <tr>
+            <th>Report Date</th>
             <th>Customer ID</th>
             <th>Province</th>
             <th>District</th>
@@ -15,24 +16,24 @@
         </tr>
     </thead>
     <tbody>
+        {% for report in reports %}
         <tr>
-            <td>11111</td>
-            <td>Province 1</td>
-            <td>Jhapa</td>
-            <td>Bhadrapur</td>
-            <td>7</td>
-            <td class="text-success">Fixed</td>
-            <td><button class="btn btn-success">View location</button></td>
+            <td>{{report.created_date.strftime('%c') }}</td>
+            <td>{{report.customer_id}}</td>
+            <td>{{report.province}}</td>
+            <td>{{report.district}}</td>
+            <td>{{report.localbody}}</td>
+            <td>{{report.ward}}</td>
+            {% if report.status=="Reported" %}
+            <td class="text-warning">{{report.status}}</td>
+            {% elif report.status=="Solved"%}
+            <td class="text-success">{{report.status}}</td>
+            {%else%}
+            <td class="text-danger">{{report.status}}</td>
+            {% endif %}
+            <td><a target="_blank" href="https://www.google.com/maps/search/{{report.latitude}},{{report.longitude}}"><button class="btn btn-success">View location</button></a></td>
         </tr>
-        <tr>
-            <td>22222</td>
-            <td>Province 3</td>
-            <td>Kathmandu</td>
-            <td>Mulpani</td>
-            <td>7</td>
-            <td class="text-warning">Working On It</td>
-            <td><button class="btn btn-success">View location</button></td>
-        </tr>
+        {% endfor %}
     </tbody>
 </table>
 

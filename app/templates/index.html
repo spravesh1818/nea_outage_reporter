@@ -10,10 +10,10 @@
         <div class="card">
             <div class="card-body">
                 <h1 class="card-title">Report Outage</h1>
-                <form action="" method="post" novalidate>
+                <form action="/report" method="post">
                     <div class="form-group" id="province_list">
                         <label>Select Province</label>
-                        <select class="form-control"  required>
+                        <select class="form-control" required name="province">
                             <option value="" disabled selected hidden>Choose Province...</option>
                             <option>Province 1</option>
                             <option>Province 2</option>
@@ -28,7 +28,7 @@
 
                     <div class="form-group" id="district_list">
                         <label>Select District</label>
-                        <select class="form-control"  required>
+                        <select class="form-control" required name="district">
                             <option value="" disabled selected hidden>Choose District...</option>
                             <option>District 1</option>
                             <option>District 2</option>
@@ -40,9 +40,9 @@
                         </select>
                     </div>
 
-                    <div class="form-group" id="local_body_list">
+                    <div class="form-group" id="local_body_list" name="localbody">
                         <label>Select Local Constituency</label>
-                        <select class="form-control" required>
+                        <select class="form-control" name="localbody" required>
                             <option value="" disabled selected hidden>Choose Local Constituency...</option>
                             <option>Local Body 1</option>
                             <option>Local Body 2</option>
@@ -53,11 +53,25 @@
                             <option>Local Body 7</option>
                         </select>
                     </div>
-
+                    <div class="form-group" id="ward_no">
+                        <label>Ward No.<span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" name="ward_number" placeholder="Ward Number" required/>
+                    </div>
 
                     <div class="form-group" id="customer_id">
                         <label>Your Customer Id<span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" placeholder="Customer ID" required/>
+                        <input class="form-control" name="customer_id" type="text" placeholder="Customer ID" required/>
+                    </div>
+
+                    <div class="form-group" id="latitude_box">
+                        <label>Your Customer Id<span class="text-danger">*</span></label>
+                        <input class="form-control" name="latitude" type="text" required/>
+                    </div>
+
+
+                    <div class="form-group" id="longitude_box">
+                        <label>Your Customer Id<span class="text-danger">*</span></label>
+                        <input class="form-control" name="longitude" type="text" required/>
                     </div>
                     <div class="form-group">
                         <button class="btn btn-primary">Send</button>
@@ -74,23 +88,77 @@
         district_list=$('#district_list');
         local_body_list=$('#local_body_list');
         customer_id_field=$('#customer_id');
+        ward_number=$('#ward_no');
+        latitude=$('#latitude_box input');
+        longitude=$('#longitude_box input');
         district_list.hide();
         local_body_list.hide();
         customer_id_field.hide();
+        ward_number.hide();
+        longitude_box=$('#longitude_box');
+        latitude_box=$('#latitude_box');
+        province_list=$('#province_list select');
+        longitude_box.hide();
+        latitude_box.hide();
+
+        if ("geolocation" in navigator){ //check geolocation available
+		//try to get user current location using getCurrentPosition() method
+		navigator.geolocation.getCurrentPosition(function(position){
+				latitude.val(position.coords.latitude);
+			    longitude.val(position.coords.longitude);
+			});
+	    }else{
+		console.log("Browser doesn't support geolocation!");
+	    }
+
+
+
+        default_option='<option value="" disabled selected hidden>Choose Province...</option>';
+        $.get("/province", function(data){
+            province_list.empty();
+            province_list.append(default_option);
+            $.each(data, function() {
+                province_list.append($("<option />").val(this.id).text(this.name));
+            });
+        });
+
+
     });
 
 
     $(document).on('change','#province_list',function(){
+          province_id=province_list.find(":selected").val();
+          district_list_select=$('#district_list select');
+          url="/district_by_province/"+province_id;
+
+          $.get(url, function(data){
+            district_list_select.empty();
+            $.each(data, function() {
+                district_list_select.append($("<option />").val(this.id).text(this.name));
+            });
+          });
           district_list.show();
     });
 
     $(document).on('change','#district_list',function(){
-               local_body_list.show();
+          district_id=district_list_select.find(":selected").val();
+          console.log(district_id);
+          local_body_list_select=$('#local_body_list select');
+          url="/localbody_by_district/"+district_id;
+          $.get(url, function(data){
+            local_body_list_select.empty();
+            $.each(data, function() {
+                local_body_list_select.append($("<option />").val(this.id).text(this.name));
+            });
+          });
+          local_body_list.show();
     });
 
     $(document).on('change','#local_body_list',function(){
-               customer_id_field.show();
+            customer_id_field.show();
+            ward_number.show();
     });
+
 
 </script>
 

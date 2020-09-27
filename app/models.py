@@ -1,3 +1,4 @@
+import datetime
 from app import db
 from werkzeug.security import generate_password_hash,check_password_hash
 from flask_login import UserMixin
@@ -78,6 +79,29 @@ class LocalBody(db.Model):
     def __repr__(self):
         return "<Local Body> {}".format(self.name)
 
-class Ward(db.Model):
+class Report(db.Model):
+    __tablename__="reports"
     id = db.Column(db.Integer, primary_key=True)
-    ward_no=db.Column(db.String(64), index=True)
+    province = db.Column(db.String(64), index=True)
+    district = db.Column(db.String(64))
+    localbody=db.Column(db.String(64))
+    customer_id=db.Column(db.String(64))
+    latitude=db.Column(db.String(64))
+    longitude=db.Column(db.String(64))
+    ward=db.Column(db.String(64))
+    status=db.Column(db.String(64))
+    created_date = db.Column(db.DateTime, default=datetime.datetime.utcnow)
+
+    def __init__(self,province,district,localbody,customer_id,latitude,longitude,ward,status):
+        self.province=province
+        self.district=district
+        self.localbody=localbody
+        self.customer_id=customer_id
+        self.latitude=latitude
+        self.longitude=longitude
+        self.ward=ward
+        self.status=status
+
+
+    def __repr__(self):
+        return "<Report> {}".format(self.id)
