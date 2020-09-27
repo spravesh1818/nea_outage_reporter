@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<table id="table_id" class="display">
+    <thead>
+        <tr>
+            <th>Customer ID</th>
+            <th>Province</th>
+            <th>District</th>
+            <th>Local Constituency</th>
+            <th>Ward No</th>
+            <th>Outage Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>11111</td>
+            <td>Province 1</td>
+            <td>Jhapa</td>
+            <td>Bhadrapur</td>
+            <td>7</td>
+            <td class="text-success">Fixed</td>
+            <td><button class="btn btn-success">View location</button></td>
+        </tr>
+        <tr>
+            <td>22222</td>
+            <td>Province 3</td>
+            <td>Kathmandu</td>
+            <td>Mulpani</td>
+            <td>7</td>
+            <td class="text-warning">Working On It</td>
+            <td><button class="btn btn-success">View location</button></td>
+        </tr>
+    </tbody>
+</table>
+
+<script>
+    $(document).ready( function () {
+    $('#table_id').DataTable();});
+</script>
+
+{% endblock %}

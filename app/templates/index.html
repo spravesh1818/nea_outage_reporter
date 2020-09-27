@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block content %}
+<!--Show the form to report to the system-->
+
+<div class="row">
+    <div class="col-sm">
+    </div>
+    <div class="col-sm">
+        <div class="card">
+            <div class="card-body">
+                <h1 class="card-title">Report Outage</h1>
+                <form action="" method="post" novalidate>
+                    <div class="form-group" id="province_list">
+                        <label>Select Province</label>
+                        <select class="form-control"  required>
+                            <option value="" disabled selected hidden>Choose Province...</option>
+                            <option>Province 1</option>
+                            <option>Province 2</option>
+                            <option>Province 3</option>
+                            <option>Province 4</option>
+                            <option>Province 5</option>
+                            <option>Province 6</option>
+                            <option>Province 7</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group" id="district_list">
+                        <label>Select District</label>
+                        <select class="form-control"  required>
+                            <option value="" disabled selected hidden>Choose District...</option>
+                            <option>District 1</option>
+                            <option>District 2</option>
+                            <option>District 3</option>
+                            <option>District 4</option>
+                            <option>District 5</option>
+                            <option>District 6</option>
+                            <option>District 7</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" id="local_body_list">
+                        <label>Select Local Constituency</label>
+                        <select class="form-control" required>
+                            <option value="" disabled selected hidden>Choose Local Constituency...</option>
+                            <option>Local Body 1</option>
+                            <option>Local Body 2</option>
+                            <option>Local Body 3</option>
+                            <option>Local Body 4</option>
+                            <option>Local Body 5</option>
+                            <option>Local Body 6</option>
+                            <option>Local Body 7</option>
+                        </select>
+                    </div>
+
+
+                    <div class="form-group" id="customer_id">
+                        <label>Your Customer Id<span class="text-danger">*</span></label>
+                        <input class="form-control" type="text" placeholder="Customer ID" required/>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-primary">Send</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-sm"></div>
+</div>
+<script>
+    $(document).ready(function(){
+        district_list=$('#district_list');
+        local_body_list=$('#local_body_list');
+        customer_id_field=$('#customer_id');
+        district_list.hide();
+        local_body_list.hide();
+        customer_id_field.hide();
+    });
+
+
+    $(document).on('change','#province_list',function(){
+          district_list.show();
+    });
+
+    $(document).on('change','#district_list',function(){
+               local_body_list.show();
+    });
+
+    $(document).on('change','#local_body_list',function(){
+               customer_id_field.show();
+    });
+
+</script>
+
+
+{% endblock %}
